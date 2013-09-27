@@ -56,7 +56,7 @@ static int write_int (const char *path, int value) {
 	fd = open(path, O_RDWR);
 	if (fd < 0) {
 		if (already_warned == 0) {
-			ALOGE("write_int failed to open %s\n", path);
+			LOGE("write_int failed to open %s\n", path);
 			already_warned = 1;
 		}
 		return -errno;
@@ -77,7 +77,7 @@ static int write_string (const char *path, const char *value) {
 	fd = open(path, O_RDWR);
 	if (fd < 0) {
 		if (already_warned == 0) {
-			ALOGE("write_string failed to open %s\n", path);
+			LOGE("write_string failed to open %s\n", path);
 			already_warned = 1;
 		}
 		return -errno;
@@ -107,7 +107,7 @@ static int set_light_backlight (struct light_device_t *dev, struct light_state_t
 	int err = 0;
 	int brightness = rgb_to_brightness(state);
 
-	ALOGV("%s brightness=%d", __func__, brightness);
+	LOGV("%s brightness=%d", __func__, brightness);
 	pthread_mutex_lock(&g_lock);
 	err = write_int (LCD_BACKLIGHT_FILE, brightness);
 	pthread_mutex_unlock(&g_lock);
@@ -166,20 +166,20 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 	if (delayshift < numbits * 2)
 	delayshift = numbits * 2;
 
-	ALOGV("numbits = %d, delayshift = %d", numbits, delayshift);
+	LOGV("numbits = %d, delayshift = %d", numbits, delayshift);
 
 	patbits = ((uint32_t)1 << numbits) - 1;
-	ALOGV("patbits = 0x%x", patbits);
+	LOGV("patbits = 0x%x", patbits);
 
 	for (i = 0; i < 32; i += delayshift) {
 	pattern = pattern | (patbits << i);
 	}
 
-	ALOGV("pattern = 0x%x", pattern);
+	LOGV("pattern = 0x%x", pattern);
 
 	snprintf(patternstr, 11, "0x%x", pattern);
 
-	ALOGV("patternstr = %s", patternstr);
+	LOGV("patternstr = %s", patternstr);
 	}
 #endif
 
@@ -304,7 +304,8 @@ static struct hw_module_methods_t lights_module_methods = {
 	.open = open_lights,
 };
 
-struct hw_module_t HAL_MODULE_INFO_SYM = {
+
+const struct hw_module_t HAL_MODULE_INFO_SYM = {
 	.tag		= HARDWARE_MODULE_TAG,
 	.version_major	= 1,
 	.version_minor	= 0,
